@@ -1,0 +1,8 @@
+go.property("direction", vmath.vector3())
+go.property("ad", 0)
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") then 
+		msg.post(message.other_id, "direction", {direction=self.direction, ad=self.ad})
+	end	
+end

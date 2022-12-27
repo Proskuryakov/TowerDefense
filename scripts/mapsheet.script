@@ -1,0 +1,25 @@
+--[[  Project:  TactxStudios Tower Defense Defold Tutorial Game - 1024 x 768
+=============================================================================================
+
+Lua Script File:  	mapsheet.script  v2.0
+
+Script Summary: 	Provides the ability to switch mapsheets reflecting Levels; upon receipt
+					of a message -- setup of gameMap using animations
+
+
+=============================================================================================
+--]]
+
+-- ------------------------------------------------------------------------------------------
+-- Message Processing
+-- ------------------------------------------------------------------------------------------
+
+function on_message(self, message_id, message, sender)
+
+	-- Process msg to update the mapsheet
+	if message_id == hash("updateMapVersion") then
+		local mapLevel = message.mapLevel
+		msg.post("#sprite", "play_animation", {id = hash(mapLevel)})
+	end
+
+end

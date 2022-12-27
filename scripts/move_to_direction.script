@@ -1,0 +1,17 @@
+go.property("speed", 100)
+go.property("direction", vmath.vector3(1, 0, 0))
+go.property("ad", 0)
+
+function update(self, dt)
+	local position = go.get_position()
+	position = position +  self.direction * dt * self.speed
+	go.set_position(position)
+end
+
+function on_message(self, message_id, message) 
+	if message_id == hash("direction") then 
+		if message.ad >= self.ad then
+			self.direction = message.direction
+		end
+	end	
+end

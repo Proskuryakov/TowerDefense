@@ -1,0 +1,6 @@
+function on_message(self, message_id, message) 
+	if message_id == hash("direction") then 
+		sprite.set_hflip("#sprite", message.direction.x < 0 )
+	end	
+end
+

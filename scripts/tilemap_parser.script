@@ -1,0 +1,37 @@
+go.property("shift_x", 0)
+go.property("shift_y", 0)
+
+local camera = require "orthographic.camera" 
+
+function init(self)
+	local x, y, w, h = tilemap.get_bounds("/map#map1")	
+	
+	msg.post(".", "acquire_input_focus")
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.pressed then 
+		local to_vector = vmath.vector3(action.screen_x, action.screen_y, 0)
+		local touch_world_position = camera.screen_to_world(hash("/camera"), to_vector) / 32
+
+		touch_world_position = touch_world_position + vmath.vector3(1)
+		touch_world_position.x = math.floor(touch_world_position.x)
+		touch_world_position.y = math.floor(touch_world_position.y)
+		print("touch " .. touch_world_position)
+
+		local spawn_position = touch_world_position * 32 - vmath.vector3(16)
+		spawn_position.x = spawn_position.x + self.shift_x
+		spawn_position.y = spawn_position.y + self.shift_y
+		spawn_position.z = 0.5
+		print("spawn " .. spawn_position)
+		local tile_id = tilemap.get_tile("/map#map1", "build", touch_world_position.x, touch_world_position.y) 
+
+		local id = factory.create("#factory", spawn_position)
+	end
+end

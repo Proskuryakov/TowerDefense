@@ -1,0 +1,14 @@
+local function spawn_enemy(self, timer_handle)
+	if (self.count > 15) then
+		timer.cancel(timer_handle)
+	end
+	self.count = self.count + 1
+	msg.post("/spawner1#ghost_spawner", "ghost", {ad=-1})
+	msg.post("/spawner2#ghost_spawner", "ghost") 
+		
+end
+
+function init(self)
+	self.count = 0
+	timer.delay(1, true, spawn_enemy)
+end
