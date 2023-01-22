@@ -1,37 +1,37 @@
-go.property("shift_x", 0)
-go.property("shift_y", 0)
-
 local camera = require "orthographic.camera" 
 
-function init(self)
-	local x, y, w, h = tilemap.get_bounds("/map#map1")	
-	
+function init(self)	
 	msg.post(".", "acquire_input_focus")
 end
 
-function on_message(self, message_id, message, sender)
-	-- Add message-handling code here
-	-- Learn more: https://defold.com/manuals/message-passing/
-	-- Remove this function if not needed
+local function check_tiles(x, y)
+	local id_11 = tilemap.get_tile("/map#map", "build", x, y)
+	local id_12 = tilemap.get_tile("/map#map", "build", x, y + 1)
+	local id_21 = tilemap.get_tile("/map#map", "build", x + 1, y)
+	local id_22 = tilemap.get_tile("/map#map", "build", x + 1, y + 1)
+
+	return id_11 == id_12 and id_21 == id_22 and id_11 == 1 and id_21 == 1
 end
+
 
 function on_input(self, action_id, action)
 	if action_id == hash("touch") and action.pressed then 
-		local to_vector = vmath.vector3(action.screen_x, action.screen_y, 0)
-		local touch_world_position = camera.screen_to_world(hash("/camera"), to_vector) / 32
-
+		local to_vector = vmath.vector3(action.x, action.y, 0)
+		local touch_world_position = (camera.screen_to_world(hash("/level_camera"), to_vector) - vmath.vector3(8)) / 16
+		
 		touch_world_position = touch_world_position + vmath.vector3(1)
 		touch_world_position.x = math.floor(touch_world_position.x)
 		touch_world_position.y = math.floor(touch_world_position.y)
-		print("touch " .. touch_world_position)
 
-		local spawn_position = touch_world_position * 32 - vmath.vector3(16)
-		spawn_position.x = spawn_position.x + self.shift_x
-		spawn_position.y = spawn_position.y + self.shift_y
+		if not check_tiles(touch_world_position.x, touch_world_position.y) then 
+			return
+		end
+		
+		local spawn_position = touch_world_position * 16
 		spawn_position.z = 0.5
 		print("spawn " .. spawn_position)
-		local tile_id = tilemap.get_tile("/map#map1", "build", touch_world_position.x, touch_world_position.y) 
-
+		
 		local id = factory.create("#factory", spawn_position)
 	end
+
 end

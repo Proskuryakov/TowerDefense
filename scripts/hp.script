@@ -1,0 +1,20 @@
+go.property("hp", 10)
+go.property("current_hp", 10)
+go.property("hp_component", hash(""))
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("damage") then 
+		self.current_hp = self.current_hp - message.damage
+		if self.current_hp <= 0 then 
+			go.delete()
+			return
+		end
+
+		if self.hp_component ~= hash("") then 
+			local hp_factor = self.current_hp / self.hp
+			local path = msg.url(nil, go.get_id(), self.hp_component)
+			msg.post(path, "hp", {factor=hp_factor})
+
+		end
+	end	
+end

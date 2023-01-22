@@ -1,0 +1,22 @@
+local camera = require "orthographic.camera"
+
+local min_bar = 0
+local max_bar = 30
+
+function init(self)
+	self.root_box = gui.get_node("box")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("position") then 
+		local new_position = camera.world_to_screen(hash("/level_camera"), message.position, gui.ADJUST_FIT)
+		new_position.y = new_position.y + 25
+		new_position.x = new_position.x - max_bar / 2
+		gui.set_position(self.root_box, new_position)
+	end
+
+	if message_id == hash("hp") then 
+		local hp_factor = max_bar * message.factor
+		gui.set_size(self.root_box, vmath.vector3(hp_factor, 5, 0))
+	end
+end

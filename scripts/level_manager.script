@@ -1,21 +1,29 @@
 function on_message(self, message_id, message, sender)
-	if message_id == hash("start_game") then 
-		msg.post("#proxy_game", "load")
+	if message_id == hash("start_level_1") then 
+		msg.post("#level1_proxy", "load")
 	end
 
+	if message_id == hash("start_level_2") then 
+		msg.post("#level2_proxy", "load")
+	end
 
 	if message_id == hash("end_game") then 
-		msg.post("#proxy_game", "disable")
-		msg.post("#proxy_game", "final")
-		msg.post("#proxy_game", "unload")
-		msg.post("/gui#start_game", "enable")
+		msg.post("#level1_proxy", "disable")
+		msg.post("#level1_proxy", "final")
+		msg.post("#level1_proxy", "unload")
+
+		msg.post("#level2_proxy", "disable")
+		msg.post("#level2_proxy", "final")
+		msg.post("#level2_proxy", "unload")
+		
+		msg.post("/gui#select_level", "enable")
 	end
 
 	
 	if message_id == hash("proxy_loaded") then 
-		msg.post('#proxy_game', "init")
-		msg.post('#proxy_game', "enable")
-		msg.post('#proxy_game', "acquire_input_focus")
+		msg.post(sender, "init")
+		msg.post(sender, "enable")
+		msg.post(sender, "acquire_input_focus")
 	end	
 	
 	if message_id == hash("proxy_unloaded") then 

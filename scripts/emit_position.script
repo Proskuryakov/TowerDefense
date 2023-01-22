@@ -1,0 +1,3 @@
+function update(self, dt)
+	msg.post(".", "position", {position=go.get_position()})
+end

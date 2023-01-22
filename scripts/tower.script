@@ -1,16 +1,14 @@
 go.property("damage", 0.1)
 
 function init(self)
-	self.targer = nil
+	self.target = nil
 end
 
 function update(self, dt)
-	if self.targer then 
-		print("target " .. go.get_position(self.target))
-		print("this " .. go.get_position("."))
-		local direction = vmath.normalize(go.get_position(self.target) - go.get_position("."))
+	if self.target then
+		local direction = vmath.normalize(go.get_position(self.target) - go.get_position())
 		local rotation = vmath.quat_from_to(vmath.vector3(0, 1, 0), direction)
-		go.set_position(rotation)
+		go.set_rotation(rotation)
 		msg.post(self.target, "damage", {damage=self.damage})
 		-- добавить лерп сферический. регулировать скорость поворота башни
 		-- проверка на то, что мы смотрим на башню
@@ -19,13 +17,7 @@ function update(self, dt)
 end
 
 function on_message(self, message_id, message, sender)
-
-	if message_id == hash("trigger_response") then
-		print("message group " .. message.group)
-		print("other id " .. message.other_id)
-	end
-	
 	if message_id == hash("trigger_response") and message.group ~= hash("tower") then 
-		self.targer = message.enter and message.other_id or nil
+		self.target = message.enter and message.other_id or nil
 	end
 end
